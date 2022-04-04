@@ -10,23 +10,23 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "matchmaking",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "host.exp.exponent",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.770319428426-83ejqhcs25i012as36p3nd82ers5npor"
+        }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "package": "host.exp.exponent",
+      "googleServicesFile": "./google-services.json"
     }
   }
 }
