@@ -25,7 +25,7 @@ const HomeScreen = () => {
       displayName: 'GandalfTheGrey',
       id: '1',
       photoURL:
-        'https://www.odt.co.nz/sites/default/files/styles/odt_portrait_medium_3_4/public/story/2016/04/sir_ian_mckellen_as_gandalf_in_the_hobbit_an_unexp_517a2dba73.JPG?itok=iiiaFWJS',
+        'https://static.wikia.nocookie.net/lotr/images/e/e7/Gandalf_the_Grey.jpg/revision/latest?cb=20121110131754',
       job: 'Wizard',
       age: 60,
     },
