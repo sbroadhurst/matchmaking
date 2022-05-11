@@ -7,8 +7,9 @@ import { AntDesign, Entypo, Ionicons } from '@expo/vector-icons'
 import Swiper from 'react-native-deck-swiper'
 // import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore'
 import { db } from '../firebase'
+import generateId from '../lib/generateId'
 
 // const DUMMY_DATA =
 
@@ -101,17 +102,46 @@ const HomeScreen = () => {
   }, [db])
 
   const swipeLeft = (cardIndex) => {
-    if (!profiles[cardIndex]) return
-    const userSwiped = profiles[cardIndex]
-    console.log(`you swiped PASS on ${userSwiped.displayName}`)
-    setDoc(doc(db, 'users', user.id, 'passes', userSwiped.id), userSwiped)
+    // if (!profiles[cardIndex]) return
+    // const userSwiped = profiles[cardIndex]
+    // console.log(`you swiped PASS on ${userSwiped.displayName}`)
+    // setDoc(doc(db, 'users', user.id, 'passes', userSwiped.id), userSwiped)
   }
 
   const swipeRight = async (cardIndex) => {
     if (!profiles[cardIndex]) return
     const userSwiped = profiles[cardIndex]
-    console.log(`you swiped LIKE on ${userSwiped.displayName}`)
-    setDoc(doc(db, 'users', user.id, 'likes', userSwiped.id), userSwiped)
+    const loggedInProfile = await (await getDoc(sb, 'users', user.id)).data()
+
+    // check if user swiped on you
+    getDoc(doc(db, 'users', userSwiped.id, 'likes', user.uid)).then((documentSnapshot) => {
+      if (documentSnapshot.exists()) {
+        // this is a mutual like, first like already been made
+        // create a match
+        console.log(`you matched with ${userSwiped.displayName}`)
+
+        setDoc(doc(db, 'users', user.id, 'likes', userSwiped.id), userSwiped)
+
+        // create a match
+        setDoc(doc(db, 'matches', generateId(user.uid, userSwiped.id)), {
+          users: {
+            [user.uid]: loggedInProfile,
+            [userSwiped.id]: userSwiped,
+          },
+          usersMatched: [user, uid, userSwiped.id],
+          timestamp: serverTimestamp(),
+        })
+
+        navigation.navigate('Match', {
+          loggedInProfile,
+          userSwiped,
+        })
+      } else {
+        // this is first like
+        console.log(`you swiped LIKE on ${userSwiped.displayName}`)
+        setDoc(doc(db, 'users', user.id, 'likes', userSwiped.id), userSwiped)
+      }
+    })
   }
 
   return (
